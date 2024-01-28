@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // admin, user, etc.
-            $table->string('description')->nullable(); // Administrator, User, etc.
+            $table->string('name')->unique(); // ADMIN, GENERIC, etc.
+            $table->string('description')->nullable(); // Administrator, Generic, etc.
             $table->timestamps();
         });
     }
