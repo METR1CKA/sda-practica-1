@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,9 +18,16 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-  return !Auth::check() ? redirect()->route('login') : view('welcome');
+  $get_user_session = Auth::user();
+
+  $user = User::find($get_user_session->id);
+
+  $roles = Role::getRoles();
+
+  return $user->role->id == $roles['ADMIN'] ? view('welcome') : redirect()->route('dashboard');
 })
-  ->name('/');
+  ->name('/')
+  ->middleware(['auth', 'verified']);
 
 Route::get('/dashboard', function () {
   return view('dashboard');
