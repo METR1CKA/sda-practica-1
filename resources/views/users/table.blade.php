@@ -15,6 +15,7 @@
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Username</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Role</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Status</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">Action</th>
               </tr>
@@ -24,6 +25,7 @@
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $user->username }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $user->email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $user->role->name }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $user->active ? 'Active' : 'Inactive' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <form method="post" action="{{ route('users.destroy', $user->id) }}">

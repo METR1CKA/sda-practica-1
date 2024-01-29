@@ -35,9 +35,11 @@ class ProfileController extends Controller
    * 
    * @throws \Illuminate\Validation\ValidationException
    */
-  public function update(ProfileUpdateRequest $request): RedirectResponse
+  public function update(ProfileUpdateRequest $request)
   {
     $req = $request->validated();
+
+    unset($req['g-recaptcha-response']);
 
     $request->user()->fill($req);
 
