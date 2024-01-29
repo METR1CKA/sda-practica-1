@@ -15,10 +15,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Controlador para registrar usuarios.
+ */
 class RegisteredUserController extends Controller
 {
   /**
-   * Display the registration view.
+   * Muestra la vista de registro.
+   *
+   * @return \Illuminate\View\View
    */
   public function create(): View
   {
@@ -26,8 +31,11 @@ class RegisteredUserController extends Controller
   }
 
   /**
-   * Handle an incoming registration request.
+   * Crea un nuevo usuario.
    *
+   * @param  \App\Http\Requests\RegisterPostRequest  $request
+   * @return \Illuminate\Http\RedirectResponse
+   * 
    * @throws \Illuminate\Validation\ValidationException
    */
   public function store(RegisterPostRequest $request): RedirectResponse

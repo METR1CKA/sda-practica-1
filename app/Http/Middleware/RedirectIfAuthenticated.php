@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Middleware para redirigir si está autenticado.
+ */
 class RedirectIfAuthenticated
 {
   /**

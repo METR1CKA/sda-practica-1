@@ -4,10 +4,13 @@ namespace App\Http\Middleware;
 
 use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
 
+/**
+ * Middleware para validar la firma.
+ */
 class ValidateSignature extends Middleware
 {
   /**
-   * The names of the query string parameters that should be ignored.
+   * Los parámetros que deben ser excluidos de la firma.
    *
    * @var array<int, string>
    */

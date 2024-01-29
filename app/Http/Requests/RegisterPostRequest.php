@@ -6,10 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 
+/**
+ * Request para registrar un usuario.
+ */
 class RegisterPostRequest extends FormRequest
 {
   /**
-   * Get the validation rules that apply to the request.
+   * Obtener las reglas de validación que se aplican a la solicitud.
    *
    * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
    */

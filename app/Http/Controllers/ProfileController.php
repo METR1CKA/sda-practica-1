@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+/**
+ * Controlador para actualizar el perfil del usuario.
+ */
 class ProfileController extends Controller
 {
   /**
-   * Display the user's profile form.
+   * Muestra la vista de actualización del perfil.
+   * 
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\View\View
    */
   public function edit(Request $request): View
   {
@@ -22,7 +28,12 @@ class ProfileController extends Controller
   }
 
   /**
-   * Update the user's profile information.
+   * Actualiza el perfil del usuario.
+   * 
+   * @param  \App\Http\Requests\ProfileUpdateRequest  $request
+   * @return \Illuminate\Http\RedirectResponse
+   * 
+   * @throws \Illuminate\Validation\ValidationException
    */
   public function update(ProfileUpdateRequest $request): RedirectResponse
   {
@@ -40,7 +51,12 @@ class ProfileController extends Controller
   }
 
   /**
-   * Delete the user's account.
+   * Desactiva el perfil del usuario.
+   * 
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\RedirectResponse
+   * 
+   * @throws \Illuminate\Validation\ValidationException
    */
   public function destroy(Request $request): RedirectResponse
   {

@@ -8,10 +8,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Controlador para mostrar el formulario de verificación de correo electrónico.
+ */
 class EmailVerificationPromptController extends Controller
 {
+
   /**
-   * Display the email verification prompt.
+   * Muestra el formulario de verificación de correo electrónico.
+   *
+   * @param  Request  $request
+   * @return RedirectResponse|View
    */
   public function __invoke(Request $request): RedirectResponse|View
   {

@@ -10,12 +10,15 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Role;
 
+/**
+ * Modelo para los usuarios.
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
   use HasApiTokens, HasFactory, Notifiable;
 
   /**
-   * The attributes that are mass assignable.
+   * Los atributos que son asignables en masa.
    *
    * @var array<int, string>
    */
@@ -28,7 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
   ];
 
   /**
-   * The attributes that should be hidden for serialization.
+   * Los atributos que deben ocultarse para la serialización.
    *
    * @var array<int, string>
    */
@@ -38,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
   ];
 
   /**
-   * The attributes that should be cast.
+   * Los atributos que deben convertirse a tipos nativos.
    *
    * @var array<string, string>
    */
@@ -48,7 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
   ];
 
   /**
-   * Get the post that owns the comment.
+   * Obtiene el rol asociado al usuario.
    */
   public function role(): BelongsTo
   {

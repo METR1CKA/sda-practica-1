@@ -4,10 +4,13 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
+/**
+ * Middleware para verificar el token CSRF.
+ */
 class VerifyCsrfToken extends Middleware
 {
   /**
-   * The URIs that should be excluded from CSRF verification.
+   * Los URIs que deben ser excluidos de la verificación CSRF.
    *
    * @var array<int, string>
    */

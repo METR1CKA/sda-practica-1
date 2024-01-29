@@ -4,10 +4,13 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
+/**
+ * Middleware para recortar cadenas.
+ */
 class TrimStrings extends Middleware
 {
   /**
-   * The names of the attributes that should not be trimmed.
+   * Las rutas que no deben ser recortadas.
    *
    * @var array<int, string>
    */

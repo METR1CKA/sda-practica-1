@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Request para el inicio de sesión.
+ */
 class LoginRequest extends FormRequest
 {
   /**
-   * Determine if the user is authorized to make this request.
+   * Determina si el usuario está autorizado para hacer esta solicitud.
+   * 
+   * @return bool
    */
   public function authorize(): bool
   {
@@ -21,7 +26,7 @@ class LoginRequest extends FormRequest
   }
 
   /**
-   * Get the validation rules that apply to the request.
+   * Obtener las reglas de validación que se aplican a la solicitud.
    *
    * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
    */
@@ -34,7 +39,7 @@ class LoginRequest extends FormRequest
   }
 
   /**
-   * Attempt to authenticate the request's credentials.
+   * Autenticar la solicitud.
    *
    * @throws \Illuminate\Validation\ValidationException
    */
@@ -66,7 +71,7 @@ class LoginRequest extends FormRequest
   }
 
   /**
-   * Ensure the login request is not rate limited.
+   * Asegúrarse de que el usuario no esté limitado.
    *
    * @throws \Illuminate\Validation\ValidationException
    */
@@ -89,7 +94,7 @@ class LoginRequest extends FormRequest
   }
 
   /**
-   * Get the rate limiting throttle key for the request.
+   * Obtiene la clave de throttle para la solicitud.
    */
   public function throttleKey(): string
   {

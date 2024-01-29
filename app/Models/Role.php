@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
+/**
+ * Modelo para los roles.
+ */
 class Role extends Model
 {
   use HasFactory;
 
   /**
-   * The attributes that are mass assignable.
+   * Los atributos que son asignables en masa.
    *
    * @var array<int, string>
    */
@@ -23,7 +26,7 @@ class Role extends Model
   ];
 
   /**
-   * Get the users for the role.
+   * Obtiene los usuarios asociados al rol.
    */
   public function users(): HasMany
   {
@@ -34,20 +37,19 @@ class Role extends Model
     );
   }
 
-  // Obtiene los roles de la base de datos
+  /**
+   * Obtiene los roles de la base de datos.
+   */
   public static function getRoles()
   {
-    // Obtiene los roles de la base de datos
-    $currentRoles = DB::table('roles')
+    $current_roles = DB::table('roles')
       ->select('id', 'name')
       ->orderBy('id', 'asc')
       ->get();
 
-    // Convierte la colección a un array
-    $currentRolesArray = $currentRoles->toArray();
+    $current_roles_array = $current_roles->toArray();
 
-    // Mapea los roles a un array asociativo utilizando array_reduce
-    $values = array_reduce($currentRolesArray, function ($carry, $role) {
+    $values = array_reduce($current_roles_array, function ($carry, $role) {
       $carry[$role->name] = $role->id;
       return $carry;
     }, []);

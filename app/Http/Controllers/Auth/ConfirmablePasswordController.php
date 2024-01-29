@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Controlador para confirmar la contraseña del usuario.
+ */
 class ConfirmablePasswordController extends Controller
 {
   /**
-   * Show the confirm password view.
+   * Muestra la vista de confirmación de contraseña.
+   *
+   * @return \Illuminate\View\View
    */
   public function show(): View
   {
@@ -21,14 +26,21 @@ class ConfirmablePasswordController extends Controller
   }
 
   /**
-   * Confirm the user's password.
+   * Confirma la contraseña del usuario.
+   *
+   * @param \Illuminate\Http\Request $request
+   * @return \Illuminate\Http\RedirectResponse
+   *
+   * @throws \Illuminate\Validation\ValidationException
    */
   public function store(Request $request): RedirectResponse
   {
-    if (!Auth::guard('web')->validate([
+    $validate = Auth::guard('web')->validate([
       'email' => $request->user()->email,
       'password' => $request->password,
-    ])) {
+    ]);
+
+    if (!$validate) {
       throw ValidationException::withMessages([
         'password' => __('auth.password'),
       ]);

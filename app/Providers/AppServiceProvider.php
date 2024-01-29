@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         $migrations_pending = Artisan::call('migrate:status') > 0;
 
         if ($migrations_pending) {
-          throw new \Exception("Migrations have not been executed. Execute 'php artisan migrate' to run them.");
+          throw new \Exception('Migrations have not been executed. Execute \'php artisan migrate\' to run them.');
         }
       } catch (\Exception $e) {
         error_log("\n[-] Error: " . $e->getMessage() . "\n");
@@ -52,7 +52,11 @@ class AppServiceProvider extends ServiceProvider
 
       // Validar si los seeders se han ejecutado
       try {
-        if (Schema::hasTable('roles') && !DB::table('roles')->exists()) {
+        $exist_table_roles = Schema::hasTable('roles');
+
+        $exist_data_in_table_roles = DB::table('roles')->exists();
+
+        if ($exist_table_roles && !$exist_data_in_table_roles) {
           throw new \Exception('Seeders have not been executed. Execute \'php artisan db:seed\' to run them.');
         }
       } catch (\Exception $e) {
