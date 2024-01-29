@@ -63,6 +63,7 @@
       <x-input-label for="description" :value="__('Role description')" />
       <x-text-input id="description" name="description" type="text" class="mt-1 block w-full" :value="old('description', $user->role->description)" required autofocus autocomplete="description" readonly />
       <x-input-error class="mt-2" :messages="$errors->get('role')" />
+      <x-input-error class="mt-2" :messages="$errors->get('g-recaptcha-response')" />
     </div>
 
     <div class="flex items-center gap-4">

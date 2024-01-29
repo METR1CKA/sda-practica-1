@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\Recaptcha;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -36,6 +37,7 @@ class PasswordResetLinkController extends Controller
   {
     $request->validate([
       'email' => ['required', 'email'],
+      'g-recaptcha-response' => ['required', new Recaptcha],
     ]);
 
     $user = User::where('email', $request->email)->first();

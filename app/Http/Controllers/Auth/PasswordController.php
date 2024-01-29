@@ -20,7 +20,7 @@ class PasswordController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function update(Request $request)
+  public function update(Request $request): RedirectResponse
   {
     $validated = $request->validateWithBag('updatePassword', [
       'current_password' => ['required', 'current_password'],
