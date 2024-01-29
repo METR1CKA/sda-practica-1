@@ -19,6 +19,7 @@ class RegisterPostRequest extends FormRequest
   public function rules(): array
   {
     return [
+      'g-recaptcha-response' => 'required|captcha',
       'username' => ['required', 'string', 'max:255'],
       'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
       'password' => [
