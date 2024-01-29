@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
+use App\Rules\Recaptcha;
 
 /**
  * Request para registrar un usuario.
@@ -19,7 +20,6 @@ class RegisterPostRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'g-recaptcha-response' => 'required|captcha',
       'username' => ['required', 'string', 'max:255'],
       'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
       'password' => [
@@ -33,6 +33,7 @@ class RegisterPostRequest extends FormRequest
           ->symbols()
           ->uncompromised(5),
       ],
+      'g-recaptcha-response' => ['required', new Recaptcha],
     ];
   }
 }
