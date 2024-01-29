@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterPostRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 
@@ -30,37 +30,37 @@ class RegisteredUserController extends Controller
    *
    * @throws \Illuminate\Validation\ValidationException
    */
-  public function store(Request $request): RedirectResponse
+  public function store(RegisterPostRequest $request): RedirectResponse
   {
-    $request->validate([
-      'username' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-      'password' => [
-        'required',
-        'confirmed',
-        Password::min(8)
-          ->max(12)
-          ->mixedCase()
-          ->letters()
-          ->numbers()
-          ->symbols()
-          ->uncompromised(5),
-      ],
-    ]);
+    $data = $request->validated();
 
-    $users = User::all();
+    DB::beginTransaction();
 
-    $roles = Role::getRoles();
+    try {
+      $users = User::all();
 
-    $role_id = $users->count() == 0 ? $roles['ADMIN'] : $roles['GENERIC'];
+      $roles = Role::getRoles();
 
-    $user = User::create([
-      'username' => $request->username,
-      'email' => $request->email,
-      'password' => Hash::make($request->password),
-      'role_id' => $role_id,
-      'active' => true,
-    ]);
+      $role_id = $users->count() == 0 ? $roles['ADMIN'] : $roles['GENERIC'];
+
+      $user = User::create([
+        'username' => $data['username'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+        'role_id' => $role_id,
+        'active' => true,
+      ]);
+
+      DB::commit();
+    } catch (Exception $e) {
+      DB::rollBack();
+
+      return redirect()
+        ->back()
+        ->withErrors([
+          'password_confirmation' => 'There was an error creating the user.',
+        ]);
+    }
 
     event(new Registered($user));
 

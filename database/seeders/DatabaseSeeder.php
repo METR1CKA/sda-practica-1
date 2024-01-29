@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
       DB::commit();
     } catch (\Exception $e) {
-      echo 'Error: Roles duplicados';
+      error_log("\n[-] Error: duplicate key value roles\n");
 
       DB::rollBack();
 

@@ -18,13 +18,11 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-  $get_user_session = Auth::user();
-
-  $user = User::find($get_user_session->id);
-
   $roles = Role::getRoles();
 
-  return $user->role->id == $roles['ADMIN'] ? view('welcome') : redirect()->route('dashboard');
+  return Auth::user()->role->id == $roles['ADMIN']
+    ? view('welcome')
+    : redirect()->route('dashboard');
 })
   ->name('/')
   ->middleware(['auth', 'verified']);
