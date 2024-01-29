@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\Recaptcha;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,7 @@ class PasswordController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function update(Request $request): RedirectResponse
+  public function update(Request $request)
   {
     $validated = $request->validateWithBag('updatePassword', [
       'current_password' => ['required', 'current_password'],
@@ -34,6 +35,7 @@ class PasswordController extends Controller
           ->uncompromised(5),
         'confirmed'
       ],
+      'g-recaptcha-response' => ['required', new Recaptcha],
     ]);
 
     $request->user()->update([
