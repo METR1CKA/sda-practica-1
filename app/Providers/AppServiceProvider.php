@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,15 @@ class AppServiceProvider extends ServiceProvider
     try {
       DB::connection()->getPdo();
     } catch (\Exception $e) {
+      Log::error('ERROR TO CONNECT DB', [
+        'STATUS' => 'ERROR',
+        'MESSAGE' => $e->getMessage(),
+        'DATA' => [
+          'INFO' => 'AppServiceProvider::boot()',
+          'LINE_CODE' => $e->getLine(),
+        ]
+      ]);
+
       error_log("\n[-] Error: " . $e->getMessage() . "\n");
 
       exit(1);
@@ -45,6 +55,15 @@ class AppServiceProvider extends ServiceProvider
           throw new \Exception('Migrations have not been executed. Execute \'php artisan migrate\' to run them.');
         }
       } catch (\Exception $e) {
+        Log::error('ERROR TO RUN MIGRATIONS', [
+          'STATUS' => 'ERROR',
+          'MESSAGE' => $e->getMessage(),
+          'DATA' => [
+            'INFO' => 'AppServiceProvider::boot()',
+            'LINE_CODE' => $e->getLine(),
+          ]
+        ]);
+
         error_log("\n[-] Error: " . $e->getMessage() . "\n");
 
         exit(1);
@@ -60,6 +79,15 @@ class AppServiceProvider extends ServiceProvider
           throw new \Exception('Seeders have not been executed. Execute \'php artisan db:seed\' to run them.');
         }
       } catch (\Exception $e) {
+        Log::error('ERROR TO RUN SEEDERS', [
+          'STATUS' => 'ERROR',
+          'MESSAGE' => $e->getMessage(),
+          'DATA' => [
+            'INFO' => 'AppServiceProvider::boot()',
+            'LINE_CODE' => $e->getLine(),
+          ]
+        ]);
+
         error_log("\n[-] Error: " . $e->getMessage() . "\n");
 
         exit(1);

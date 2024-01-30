@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Controlador para registrar usuarios.
@@ -42,6 +43,14 @@ class RegisteredUserController extends Controller
   {
     $data = $request->validated();
 
+    Log::info('REGISTER', [
+      'STATUS' => 'SUCCESS',
+      'DATA' => [
+        'INFO' => 'RegisteredUserController::store()',
+        'DATA' => $data,
+      ]
+    ]);
+
     DB::beginTransaction();
 
     try {
@@ -59,9 +68,30 @@ class RegisteredUserController extends Controller
         'active' => true,
       ]);
 
+      Log::info('RegisteredUserController::store()::57', ['USER' => $user->username, 'ROLE' => $user->role->name]);
+
+      Log::info('USER CREATE', [
+        'STATUS' => 'SUCCESS',
+        'DATA' => [
+          'INFO' => 'RegisteredUserController::store()',
+          'USER' => $user,
+        ]
+      ]);
+
       DB::commit();
     } catch (Exception $e) {
       DB::rollBack();
+
+      Log::error('RegisteredUserController::store()::63', ['ERROR' => $e->getMessage(), 'LINE_CODE', '71']);
+
+      Log::error('USER CREATE', [
+        'STATUS' => 'ERROR',
+        'MESSAGE' => $e->getMessage(),
+        'DATA' => [
+          'INFO' => 'RegisteredUserController::store()',
+          'LINE_CODE' => $e->getLine(),
+        ]
+      ]);
 
       return redirect()
         ->back()
