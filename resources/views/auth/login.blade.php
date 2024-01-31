@@ -1,14 +1,8 @@
   <x-guest-layout>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
-    <script>
-      function onLogin(token) {
-        document.getElementById('login-form').submit();
-      }
-    </script>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}" id="login-form">
+    <form method="POST" action="{{ route('login') }}">
       @csrf
 
       <!-- Email Address -->
@@ -23,7 +17,6 @@
         <x-input-label for="password" :value="__('Password')" />
         <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        <x-input-error :messages="$errors->get('g-recaptcha-response')" class="mt-2" />
       </div>
 
       <!-- Remember Me -->
@@ -35,7 +28,7 @@
       </div>
 
       <!-- Recaptcha V2 -->
-      <!-- <div class="form-group mt-3">
+      <div class="form-group mt-3">
         {!! NoCaptcha::renderJs() !!}
         {!! NoCaptcha::display() !!}
       </div>
@@ -46,7 +39,7 @@
           <strong class="text-red-500">{{ $errors->first('g-recaptcha-response') }}</strong>
         </span>
       </div>
-      @endif -->
+      @endif
 
       <div class="flex items-center justify-end mt-4">
         @if (Route::has('password.request'))
@@ -55,13 +48,11 @@
         </a>
         @endif
 
-        <x-primary-button class="ms-3">
-          <a href="{{ route('register') }}">
-            {{ __('Register') }}
-          </a>
-        </x-primary-button>
+        <a class="ms-4 underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">
+          {{ __('Register account') }}
+        </a>
 
-        <x-primary-button class="ms-3 g-recaptcha" data-sitekey="6LcyA2ApAAAAAEx-ghJioxM5aDaQ--_5qxNjwaMD" data-callback='onLogin' data-action='submit'>
+        <x-primary-button class="ms-4">
           {{ __('Log in') }}
         </x-primary-button>
       </div>
