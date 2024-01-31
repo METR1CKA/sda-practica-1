@@ -77,6 +77,10 @@ class AuthenticatedSessionController extends Controller
       'METHOD' => 'destroy',
     ]);
 
+    $request->user()->email_verified_at = null;
+
+    $request->user()->save();
+
     Auth::guard('web')->logout();
 
     $request->session()->invalidate();
