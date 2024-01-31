@@ -15,6 +15,20 @@
       <x-input-error :messages="$errors->get('password')" class="mt-2" />
     </div>
 
+    <!-- Recaptcha V2 -->
+    <div class="form-group mt-3">
+      {!! NoCaptcha::renderJs() !!}
+      {!! NoCaptcha::display() !!}
+    </div>
+
+    @if ($errors->has('g-recaptcha-response'))
+    <div class="form-group mt-3">
+      <span class="help-block">
+        <strong class="text-red-500">{{ $errors->first('g-recaptcha-response') }}</strong>
+      </span>
+    </div>
+    @endif
+
     <div class="flex justify-end mt-4">
       <x-primary-button>
         {{ __('Confirm') }}

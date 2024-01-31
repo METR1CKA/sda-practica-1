@@ -33,7 +33,7 @@ class RegisterPostRequest extends FormRequest
           ->symbols()
           ->uncompromised(5),
       ],
-      'g-recaptcha-response' => ['required', new Recaptcha],
+      'g-recaptcha-response' => ['required', 'captcha'],
     ];
   }
 }
