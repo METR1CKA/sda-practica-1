@@ -30,7 +30,7 @@
       <!-- Recaptcha V2 -->
       <div class="form-group mt-3">
         {!! NoCaptcha::renderJs() !!}
-        {!! NoCaptcha::display() !!}
+        {!! NoCaptcha::display(['data-theme' => 'dark']) !!}
       </div>
 
       @if ($errors->has('g-recaptcha-response'))
