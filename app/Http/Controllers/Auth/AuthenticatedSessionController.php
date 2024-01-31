@@ -20,6 +20,14 @@ class AuthenticatedSessionController extends Controller
    */
   public function create(): View
   {
+    Log::info('SEND VIEW LOGIN', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Show view to login',
+      'USER' => Auth::user() ?? 'GUEST',
+      'CONTROLLER' => AuthenticatedSessionController::class,
+      'METHOD' => 'create',
+    ]);
+
     return view('auth.login');
   }
 
@@ -76,10 +84,6 @@ class AuthenticatedSessionController extends Controller
       'CONTROLLER' => AuthenticatedSessionController::class,
       'METHOD' => 'destroy',
     ]);
-
-    $request->user()->email_verified_at = null;
-
-    $request->user()->save();
 
     Auth::guard('web')->logout();
 

@@ -28,6 +28,14 @@ class RegisteredUserController extends Controller
    */
   public function create(): View
   {
+    Log::info('SEND VIEW REGISTER', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Show view to register',
+      'CONTROLLER' => RegisteredUserController::class,
+      'USER' => Auth::user() ?? 'GUEST',
+      'METHOD' => 'create',
+    ]);
+
     return view('auth.register');
   }
 
@@ -41,17 +49,26 @@ class RegisteredUserController extends Controller
    */
   public function store(RegisterPostRequest $request): RedirectResponse
   {
-    $data = $request->validated();
-
-    Log::info('REGISTER', [
-      'STATUS' => 'SUCCESS',
-      'DATA' => [
-        'INFO' => 'RegisteredUserController::store()',
-        'DATA' => $data,
-      ]
+    Log::info('REQUEST TO REGISTER', [
+      'ACTION' => 'Register',
+      'HTTP-VERB' => $request->method(),
+      'URL' => $request->url(),
+      'IP' => $request->ip(),
+      'USER_AGENT' => $request->userAgent(),
+      'SESSION' => $request->session()->all(),
+      'CONTROLLER' => RegisteredUserController::class,
+      'METHOD' => 'store',
     ]);
 
+    $data = $request->validated();
+
     DB::beginTransaction();
+
+    Log::info('VALIDATION TO REGISTER PASSED', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Register',
+      'USER' => $request->user(),
+    ]);
 
     try {
       $users = User::all();
@@ -68,29 +85,24 @@ class RegisteredUserController extends Controller
         'active' => true,
       ]);
 
-      Log::info('RegisteredUserController::store()::57', ['USER' => $user->username, 'ROLE' => $user->role->name]);
-
-      Log::info('USER CREATE', [
+      Log::info('USER CREATED', [
         'STATUS' => 'SUCCESS',
-        'DATA' => [
-          'INFO' => 'RegisteredUserController::store()',
-          'USER' => $user,
-        ]
+        'ACTION' => 'Register',
+        'USER' => $user,
       ]);
 
       DB::commit();
     } catch (Exception $e) {
       DB::rollBack();
 
-      Log::error('RegisteredUserController::store()::63', ['ERROR' => $e->getMessage(), 'LINE_CODE', '71']);
-
-      Log::error('USER CREATE', [
+      Log::error('ERROR CREATING USER', [
         'STATUS' => 'ERROR',
+        'ACTION' => 'Register',
+        'USER' => $request->user(),
         'MESSAGE' => $e->getMessage(),
-        'DATA' => [
-          'INFO' => 'RegisteredUserController::store()',
-          'LINE_CODE' => $e->getLine(),
-        ]
+        'LINE_CODE' => $e->getLine(),
+        'TRACE' => $e->getTraceAsString(),
+        'FILE' => $e->getFile(),
       ]);
 
       return redirect()

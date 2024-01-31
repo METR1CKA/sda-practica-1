@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Rules\Recaptcha;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
 
@@ -22,6 +24,14 @@ class PasswordResetLinkController extends Controller
    */
   public function create(): View
   {
+    Log::info('SEND VIEW FORGOT PASSWORD', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Show view to forgot password',
+      'CONTROLLER' => PasswordResetLinkController::class,
+      'USER' => Auth::user() ?? 'GUEST',
+      'METHOD' => 'create',
+    ]);
+
     return view('auth.forgot-password');
   }
 
@@ -35,14 +45,36 @@ class PasswordResetLinkController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
+    Log::info('REQUEST TO SEND RESET PASSWORD LINK', [
+      'ACTION' => 'Send reset password link',
+      'HTTP-VERB' => $request->method(),
+      'URL' => $request->url(),
+      'IP' => $request->ip(),
+      'USER_AGENT' => $request->userAgent(),
+      'SESSION' => $request->session()->all(),
+      'CONTROLLER' => PasswordResetLinkController::class,
+      'METHOD' => 'store',
+    ]);
+
     $request->validate([
       'email' => ['required', 'email'],
       'g-recaptcha-response' => ['required', new Recaptcha],
     ]);
 
+    Log::info('VALIDATION TO SEND RESET PASSWORD LINK PASSED', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Send reset password link',
+    ]);
+
     $user = User::where('email', $request->email)->first();
 
     if (!$user->active) {
+      Log::alert('USER NOT ACTIVE', [
+        'STATUS' => 'ERROR',
+        'ACTION' => 'Send reset password link',
+        'USER' => $user,
+      ]);
+
       return back()
         ->withErrors([
           'email' => 'No user was found with that email.',
@@ -55,6 +87,21 @@ class PasswordResetLinkController extends Controller
     $status = Password::sendResetLink(
       $request->only('email')
     );
+
+    $data = [
+      'STATUS' => $status == Password::PASSWORD_RESET ? 'SUCCESS' : 'FAILED',
+      'ACTION' => 'Send reset password link',
+      'USER' => $request->user(),
+      'PASSWORD-STATUS' => $status,
+    ];
+
+    $msg = "PASSWORD RESET" . $status == Password::PASSWORD_RESET
+      ? 'COMPLETED'
+      : 'FAILED';
+
+    $status == Password::PASSWORD_RESET
+      ? Log::info($msg, $data)
+      : Log::alert($msg, $data);
 
     return $status == Password::RESET_LINK_SENT
       ? back()->with('status', __($status))

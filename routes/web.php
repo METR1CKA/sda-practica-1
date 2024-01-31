@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,10 @@ use App\Models\Role;
 Route::middleware(['auth', 'verified'])->group(function () {
   // Ruta principal
   Route::get('/', function () {
+    Log::info('SEND VIEW WELCOME', [
+      'USER' => Auth::user(),
+    ]);
+
     return view('welcome');
   })
     ->middleware(['admin.view.welcome'])
