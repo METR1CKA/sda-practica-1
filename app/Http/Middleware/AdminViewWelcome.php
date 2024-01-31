@@ -21,6 +21,16 @@ class AdminViewWelcome
 
     $role_id = Auth::user()->role->id;
 
-    return $role_id == $roles['ADMIN'] ? $next($request) : redirect()->route('dashboard');
+    $password_confirmed_at = $request->session()->has('auth.password_confirmed_at');
+
+    if (!$password_confirmed_at) {
+      return redirect()->route('password.confirm');
+    }
+
+    if ($role_id != $roles['ADMIN']) {
+      return redirect()->route('dashboard');
+    }
+
+    return $next($request);
   }
 }
