@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Role;
 use Illuminate\Support\Facades\Log;
 
 /*
@@ -32,6 +31,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   // Ruta de dashboard
   Route::get('/dashboard', function () {
+    Log::info('SEND VIEW DASHBOARD', [
+      'USER' => Auth::user(),
+    ]);
+
     return view('dashboard');
   })
     ->name('dashboard');
