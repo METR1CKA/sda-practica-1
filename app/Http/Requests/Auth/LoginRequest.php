@@ -7,6 +7,7 @@ use App\Rules\Recaptcha;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -36,7 +37,7 @@ class LoginRequest extends FormRequest
     return [
       'email' => ['required', 'string', 'email'],
       'password' => ['required', 'string'],
-      'g-recaptcha-response' => ['required', new Recaptcha],
+      'g-recaptcha-response' => ['required', 'captcha'],
     ];
   }
 
@@ -47,11 +48,20 @@ class LoginRequest extends FormRequest
    */
   public function authenticate(): void
   {
+    Log::info('METHOD AUTHENTICATE', [
+      'CONTROLLER' => LoginRequest::class,
+      'METHOD' => 'authenticate',
+    ]);
+
     $this->ensureIsNotRateLimited();
 
     $attempt = Auth::attempt($this->only('email', 'password'), $this->boolean('remember'));
 
     if (!$attempt) {
+      Log::alert('NO ATTEMPT', [
+        'MESSAGE' => trans('auth.failed')
+      ]);
+
       RateLimiter::hit($this->throttleKey());
 
       throw ValidationException::withMessages([
@@ -63,6 +73,11 @@ class LoginRequest extends FormRequest
 
     if (!$user->active) {
       Auth::logout();
+
+      Log::alert('USER INACTIVE TRYING TO LOGIN', [
+        'USER' => $user,
+        'MESSAGE' => trans('auth.failed')
+      ]);
 
       throw ValidationException::withMessages([
         'password' => trans('auth.failed'),

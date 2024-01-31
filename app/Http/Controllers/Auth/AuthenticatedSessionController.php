@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -31,16 +31,27 @@ class AuthenticatedSessionController extends Controller
    */
   public function store(LoginRequest $request): RedirectResponse
   {
+    Log::info('REQUEST TO LOGIN', [
+      'ACTION' => 'Authenticate',
+      'HTTP-VERB' => $request->method(),
+      'URL' => $request->url(),
+      'IP' => $request->ip(),
+      'SESSION' => $request->session()->all(),
+      'USER_AGENT' => $request->userAgent(),
+      'CONTROLLER' => AuthenticatedSessionController::class,
+      'METHOD' => 'store',
+    ]);
+
     $request->authenticate();
 
     $request->session()->regenerate();
 
     Log::info('LOGIN', [
       'STATUS' => 'SUCCESS',
-      'DATA' => [
-        'INFO' => 'AuthenticatedSessionController::store()',
-        'USER' => Auth::user(),
-      ]
+      'ACTION' => 'Authenticate',
+      'SESSION' => $request->session()->all(),
+      'USER' => Auth::user(),
+      'REDIRECT_TO' => RouteServiceProvider::HOME,
     ]);
 
     return redirect()->intended(RouteServiceProvider::HOME);
@@ -54,7 +65,17 @@ class AuthenticatedSessionController extends Controller
    */
   public function destroy(Request $request): RedirectResponse
   {
-    $current_user = Auth::user();
+    Log::info('REQUEST TO LOGOUT', [
+      'ACTION' => 'Revoke session',
+      'HTTP-VERB' => $request->method(),
+      'URL' => $request->url(),
+      'IP' => $request->ip(),
+      'USER_AGENT' => $request->userAgent(),
+      'SESSION' => $request->session()->all(),
+      'USER' => Auth::user(),
+      'CONTROLLER' => AuthenticatedSessionController::class,
+      'METHOD' => 'destroy',
+    ]);
 
     Auth::guard('web')->logout();
 
@@ -64,11 +85,8 @@ class AuthenticatedSessionController extends Controller
 
     Log::info('LOGOUT', [
       'STATUS' => 'SUCCESS',
-      'DATA' => [
-        'INFO' => 'AuthenticatedSessionController::destroy()',
-        'USER' => $current_user,
-        'REVOKE' => true,
-      ]
+      'SESSION' => $request->session()->all(),
+      'REVOKE_SESSION' => Auth::check() ? 'NO' : 'YES',
     ]);
 
     return redirect('/');

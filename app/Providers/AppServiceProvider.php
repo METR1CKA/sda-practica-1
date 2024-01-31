@@ -27,16 +27,18 @@ class AppServiceProvider extends ServiceProvider
     try {
       DB::connection()->getPdo();
     } catch (\Exception $e) {
-      Log::error('ERROR TO CONNECT DB', [
+      Log::error('CONNECTION TO DATABASE', [
         'STATUS' => 'ERROR',
         'MESSAGE' => $e->getMessage(),
-        'DATA' => [
-          'INFO' => 'AppServiceProvider::boot()',
-          'LINE_CODE' => $e->getLine(),
-        ]
+        'LINE_CODE' => $e->getLine(),
+        'ACTION' => 'Exception to connect to database',
+        'CONTROLLER' => AppServiceProvider::class,
+        'METHOD' => 'boot',
+        'TRACE' => $e->getTraceAsString(),
+        'FILE' => $e->getFile(),
       ]);
 
-      error_log("\n[-] Error: " . $e->getMessage() . "\n");
+      error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
 
       exit(1);
     }
@@ -55,16 +57,18 @@ class AppServiceProvider extends ServiceProvider
           throw new \Exception('Migrations have not been executed. Execute \'php artisan migrate\' to run them.');
         }
       } catch (\Exception $e) {
-        Log::error('ERROR TO RUN MIGRATIONS', [
+        Log::error('MIGRATIONS HAVE NOT BEEN EXECUTED', [
           'STATUS' => 'ERROR',
           'MESSAGE' => $e->getMessage(),
-          'DATA' => [
-            'INFO' => 'AppServiceProvider::boot()',
-            'LINE_CODE' => $e->getLine(),
-          ]
+          'LINE_CODE' => $e->getLine(),
+          'ACTION' => 'Exception to run server',
+          'CONTROLLER' => AppServiceProvider::class,
+          'METHOD' => 'boot',
+          'TRACE' => $e->getTraceAsString(),
+          'FILE' => $e->getFile(),
         ]);
 
-        error_log("\n[-] Error: " . $e->getMessage() . "\n");
+        error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
 
         exit(1);
       }
@@ -79,16 +83,18 @@ class AppServiceProvider extends ServiceProvider
           throw new \Exception('Seeders have not been executed. Execute \'php artisan db:seed\' to run them.');
         }
       } catch (\Exception $e) {
-        Log::error('ERROR TO RUN SEEDERS', [
+        Log::error('SEEDERS HAVE NOT BEEN EXECUTED', [
           'STATUS' => 'ERROR',
           'MESSAGE' => $e->getMessage(),
-          'DATA' => [
-            'INFO' => 'AppServiceProvider::boot()',
-            'LINE_CODE' => $e->getLine(),
-          ]
+          'LINE_CODE' => $e->getLine(),
+          'ACTION' => 'Exception to run server',
+          'CONTROLLER' => AppServiceProvider::class,
+          'METHOD' => 'boot',
+          'TRACE' => $e->getTraceAsString(),
+          'FILE' => $e->getFile(),
         ]);
 
-        error_log("\n[-] Error: " . $e->getMessage() . "\n");
+        error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
 
         exit(1);
       }
