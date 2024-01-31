@@ -20,14 +20,9 @@ use App\Models\Role;
 Route::middleware(['auth', 'verified'])->group(function () {
   // Ruta principal
   Route::get('/', function () {
-    $roles = Role::getRoles();
-
-    $role_id = Auth::user()->role->id;
-
-    return $role_id == $roles['ADMIN']
-      ? view('welcome')
-      : redirect()->route('dashboard');
+    return view('welcome');
   })
+    ->middleware(['admin.view.welcome'])
     ->name('/');
 
   // Ruta de dashboard
