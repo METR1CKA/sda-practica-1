@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\TwoFactorController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -62,6 +64,16 @@ Route::middleware('auth')->group(function () {
   Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
   // 2FA authentication
+  Route::get('2fa', function () {
+    Log::info('SEND 2FA', [
+      'USER' => Auth::user(),
+    ]);
+
+    return redirect()->route('/');
+  })
+    ->middleware(['2fa.sms'])
+    ->name('2fa');
+
   Route::get('2fa/send-code', [TwoFactorController::class, 'create'])
     ->name('2fa.send-code');
 

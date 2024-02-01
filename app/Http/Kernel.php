@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
     'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     'admin.view.welcome' => \App\Http\Middleware\AdminViewWelcome::class,
     '2fa.sms' => \App\Http\Middleware\AuthTwoFactor::class,
+    'password.confirmed' => \App\Http\Middleware\PasswordConfirm::class,
   ];
 }

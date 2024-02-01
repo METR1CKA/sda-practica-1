@@ -62,7 +62,8 @@ class AuthenticatedSessionController extends Controller
       'REDIRECT_TO' => RouteServiceProvider::HOME,
     ]);
 
-    return redirect()->intended(RouteServiceProvider::HOME);
+    // return redirect()->intended(RouteServiceProvider::HOME);
+    return redirect()->route('2fa');
   }
 
   /**
@@ -84,6 +85,8 @@ class AuthenticatedSessionController extends Controller
       'CONTROLLER' => AuthenticatedSessionController::class,
       'METHOD' => 'destroy',
     ]);
+
+    $request->session()->forget('auth.password_confirmed_at');
 
     Auth::guard('web')->logout();
 

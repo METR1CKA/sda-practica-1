@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'password.confirmed'])->group(function () {
   // Ruta principal
   Route::get('/', function () {
-    Log::info('SEND VIEW WELCOME', [
+    Log::info('SEND VIEW DASHBOARD OR WELCOME', [
       'USER' => Auth::user(),
     ]);
 

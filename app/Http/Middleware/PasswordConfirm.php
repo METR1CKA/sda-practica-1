@@ -2,13 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminViewWelcome
+class PasswordConfirm
 {
   /**
    * Handle an incoming request.
@@ -23,12 +22,10 @@ class AdminViewWelcome
       return redirect()->route('login');
     }
 
-    $roles = Role::getRoles();
+    $password_confirmed_at = $request->session()->has('auth.password_confirmed_at');
 
-    $role_id = Auth::user()->role->id;
-
-    if ($check && $role_id != $roles['ADMIN']) {
-      return redirect()->route('dashboard');
+    if (!$password_confirmed_at && $check) {
+      return redirect()->route('password.confirm');
     }
 
     return $next($request);
