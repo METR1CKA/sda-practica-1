@@ -83,6 +83,9 @@ class RegisteredUserController extends Controller
         'password' => Hash::make($data['password']),
         'role_id' => $role_id,
         'active' => true,
+        'code2fa' => null,
+        'code2fa_verified' => false,
+        'phone' => null,
       ]);
 
       Log::info('USER CREATED', [

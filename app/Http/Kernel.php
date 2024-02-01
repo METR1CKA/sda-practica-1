@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
     'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     'admin.view.welcome' => \App\Http\Middleware\AdminViewWelcome::class,
+    '2fa.sms' => \App\Http\Middleware\AuthTwoFactor::class,
   ];
 }
