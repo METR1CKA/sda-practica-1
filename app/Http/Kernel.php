@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
     'signed' => \App\Http\Middleware\ValidateSignature::class,
     'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    // Custom middlewares
     'admin.view.welcome' => \App\Http\Middleware\AdminViewWelcome::class,
     '2fa.sms' => \App\Http\Middleware\AuthTwoFactor::class,
     'password.confirmed' => \App\Http\Middleware\PasswordConfirm::class,

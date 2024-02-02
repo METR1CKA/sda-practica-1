@@ -59,11 +59,10 @@ class AuthenticatedSessionController extends Controller
       'ACTION' => 'Authenticate',
       'SESSION' => $request->session()->all(),
       'USER' => Auth::user(),
-      'REDIRECT_TO' => RouteServiceProvider::HOME,
+      'REDIRECT_TO' => RouteServiceProvider::TWOFA,
     ]);
 
-    // return redirect()->intended(RouteServiceProvider::HOME);
-    return redirect()->route('2fa');
+    return redirect()->intended(RouteServiceProvider::TWOFA);
   }
 
   /**

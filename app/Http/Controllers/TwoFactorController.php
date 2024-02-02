@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PhoneRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class TwoFactorController extends Controller
 {
@@ -85,9 +84,31 @@ class TwoFactorController extends Controller
   }
 
   /**
-   * Store a newly created resource in storage.
+   * Muestra la vista para redireccionar al 2FA.
+   * 
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function store(Request $request)
+  public function show(): RedirectResponse
+  {
+    Log::info('SEND 2FA REDIRECT', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Show view to set phone number for send code',
+      'USER' => Auth::user() ?? 'GUEST',
+      'CONTROLLER' => TwoFactorController::class,
+      'METHOD' => 'show',
+    ]);
+
+    return redirect()->intended(RouteServiceProvider::HOME);
+  }
+
+  /**
+   * Store a newly created resource in storage.
+   * 
+   * @param  \Illuminate\Http\Request  $request
+   * 
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function store(Request $request): RedirectResponse
   {
     // Validar el número de teléfono
     $request->validate([
@@ -137,8 +158,12 @@ class TwoFactorController extends Controller
 
   /**
    * Update the specified resource in storage.
+   * 
+   * @param  \Illuminate\Http\Request  $request
+   * 
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function update(Request $request)
+  public function update(Request $request): RedirectResponse
   {
     // Validar el código de verificación
     $request->validate([
