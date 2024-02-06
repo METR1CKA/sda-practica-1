@@ -8,52 +8,67 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Twilio\Rest\Client;
 
 class TwoFactorController extends Controller
 {
+  /**
+   * Generar un código de verificación.
+   * 
+   * @return string
+   */
   private function generateCode(): string
   {
-    $code = rand(1000, 9999);
+    $code = rand(100000, 999999);
 
     return strval($code);
   }
 
-  private function sendCode($phone, $code)
+  /**
+   * Enviar el código de verificación a través de SMS.
+   * 
+   * @param  string  $phone
+   * @param  string  $code
+   * 
+   * @return bool
+   */
+  private function sendSmsCode($phone, $code)
   {
-    // Usar try-catch para manejar cualquier error
+    Log::info('SEND CODE', [
+      'STATUS' => 'SUCCESS',
+      'ACTION' => 'Send code',
+      'PHONE' => $phone,
+      'CONTROLLER' => TwoFactorController::class,
+      'METHOD' => 'sendSmsCode',
+      'CODE' => $code,
+    ]);
+
     try {
-      // Utilizar la API de Twilio para enviar el código de verificación
-      $url = 'https://api.twilio.com/2010-04-01/Accounts/AC5835eaf772bc767e9dc795cba8c6a29e/Messages.json';
+      $account_sid = env('TWILIO_SID');
 
-      $from = '+17246384834';
+      $auth_token = env('TWILIO_AUTH_TOKEN');
 
-      $body = "Tu código de verificación es: {$code}";
+      $twilio_number = env('TWILIO_NUMBER');
 
-      $ch = curl_init();
+      $client = new Client($account_sid, $auth_token);
 
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_POST, 1);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['From' => $from, 'To' => $phone, 'Body' => $body]));
-      curl_setopt($ch, CURLOPT_USERPWD, "AC5835eaf772bc767e9dc795cba8c6a29e:cd286c5350acfff7fae956840ad17df2");
-
-      curl_exec($ch);
-      curl_close($ch);
+      $client->messages->create(
+        $phone,
+        [
+          'from' => $twilio_number,
+          'body' => "Tu código de verificación es: {$code}"
+        ]
+      );
 
       Log::info('SEND CODE', [
         'STATUS' => 'SUCCESS',
         'ACTION' => 'Send code',
-        'PHONE' => $phone,
-        'CONTROLLER' => TwoFactorController::class,
-        'METHOD' => 'sendCode',
-        'CODE' => $code,
       ]);
     } catch (\Exception $e) {
       Log::error('SEND CODE WITH ERROR', [
         'STATUS' => 'ERROR',
         'ACTION' => 'Send code',
         'ERROR' => $e->getMessage(),
-        'CONTROLLER' => TwoFactorController::class,
-        'METHOD' => 'sendCode',
         'LINE_CODE' => $e->getLine(),
         'FILE' => $e->getFile(),
         'TRACE' => $e->getTraceAsString(),
@@ -90,7 +105,7 @@ class TwoFactorController extends Controller
    * 
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function store(Request $request): RedirectResponse
+  public function store(Request $request) //: RedirectResponse
   {
     // Validar el número de teléfono
     $request->validate([
@@ -101,14 +116,16 @@ class TwoFactorController extends Controller
     $code = $this->generateCode();
 
     // Guardar el código en la bd
-    $request->user()->phone = $request->phone;
+    $request->user()->update([
+      'phone' => $request->phone,
+    ]);
 
-    $request->user()->code2fa = $code;
-
-    $request->user()->save();
+    $request->user()->twoFA()->update([
+      'code2fa' => $code,
+    ]);
 
     // Enviar el código a través de SMS usando Twilio
-    $send = $this->sendCode($request->phone, $code);
+    $send = $this->sendSmsCode($request->phone, $code);
 
     if (!$send) {
       return back()
@@ -117,7 +134,6 @@ class TwoFactorController extends Controller
 
     // Redirigir al usuario
     return redirect()->intended(RouteServiceProvider::HOME);
-    // return redirect()->route('2fa.verify-code');
   }
 
   /**
@@ -149,11 +165,11 @@ class TwoFactorController extends Controller
   {
     // Validar el código de verificación
     $request->validate([
-      'code' => ['required', 'string', 'size:4']
+      'code' => ['required', 'string', 'size:6']
     ]);
 
     // Verificar si el código es correcto
-    $is_valid = $request->code == $request->user()->code2fa;
+    $is_valid = $request->code == $request->user()->twoFA->code2fa;
 
     if (!$is_valid) {
       // El código es incorrecto, volver a mostrar el formulario de verificación
@@ -162,9 +178,9 @@ class TwoFactorController extends Controller
     }
 
     // Marcar el código como verificado
-    $request->user()->code2fa_verified = $is_valid;
-
-    $request->user()->save();
+    $request->user()->twoFA()->update([
+      'code2fa_verified' => $is_valid,
+    ]);
 
     // El código es correcto, autenticar al usuario
     Auth::login($request->user());

@@ -30,13 +30,13 @@ class AuthTwoFactor
     if ($check && $role_id == $roles['ADMIN']) {
       $exists_phone = $request->user()->phone;
 
-      $two_factor = $request->user()->code2fa;
+      $two_factor = $request->user()->twoFA->code2fa;
 
       if (!$two_factor && !$exists_phone) {
         return redirect()->route('2fa.send-code');
       }
 
-      $two_factor_verified = $request->user()->code2fa_verified;
+      $two_factor_verified = $request->user()->twoFA->code2fa_verified;
 
       if (!$two_factor_verified) {
         return redirect()->route('2fa.verify-code');

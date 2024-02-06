@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Modelo para los usuarios.
@@ -28,8 +29,6 @@ class User extends Authenticatable implements MustVerifyEmail
     'password',
     'role_id',
     'active',
-    'code2fa',
-    'code2fa_verified',
     'phone',
   ];
 
@@ -61,6 +60,18 @@ class User extends Authenticatable implements MustVerifyEmail
     return $this->belongsTo(
       Role::class,
       'role_id',
+      'id',
+    );
+  }
+
+  /**
+   * Obtiene el código de autenticación de dos factores asociado al usuario.
+   */
+  public function twoFA(): HasOne
+  {
+    return $this->hasOne(
+      TwoFA::class,
+      'user_id',
       'id'
     );
   }

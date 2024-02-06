@@ -82,10 +82,15 @@ class RegisteredUserController extends Controller
         'password' => Hash::make($data['password']),
         'role_id' => $role_id,
         'active' => true,
-        'code2fa' => null,
-        'code2fa_verified' => false,
         'phone' => null,
       ]);
+
+      if ($role_id == $roles['ADMIN']) {
+        $user->twoFA()->create([
+          'code2fa' => null,
+          'code2fa_verified' => false,
+        ]);
+      }
 
       Log::info('USER CREATED', [
         'STATUS' => 'SUCCESS',
@@ -96,6 +101,8 @@ class RegisteredUserController extends Controller
       DB::commit();
     } catch (Exception $e) {
       DB::rollBack();
+
+      error_log($e->getMessage());
 
       Log::error('ERROR CREATING USER', [
         'STATUS' => 'ERROR',

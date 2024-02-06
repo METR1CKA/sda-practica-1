@@ -11,20 +11,15 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('users', function (Blueprint $table) {
+    Schema::create('twofa_users', function (Blueprint $table) {
       $table->id();
-      $table->string('username');
-      $table->string('email')->unique();
-      $table->timestamp('email_verified_at')->nullable();
-      $table->string('phone')->nullable();
-      $table->string('password');
-      $table->rememberToken();
-      $table->boolean('active');
-      $table->foreignId('role_id')
+      $table->foreignId('user_id')
         ->references('id')
-        ->on('roles')
+        ->on('users')
         ->onUpdate('cascade')
         ->onDelete('cascade');
+      $table->string('code2fa')->nullable();
+      $table->boolean('code2fa_verified')->default(false);
       $table->timestamps();
     });
   }
@@ -34,6 +29,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('users');
+    Schema::dropIfExists('twofa');
   }
 };
