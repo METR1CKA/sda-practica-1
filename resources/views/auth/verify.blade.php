@@ -1,6 +1,6 @@
 <x-guest-layout>
   <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-    {{ __('Please enter the two-factor authentication (2FA) code you received via SMS.') }}
+    {{ __('Hello ADMIN, please enter the two-factor authentication (2FA) code you received via SMS.') }}
   </div>
 
   <form method="POST" action="{{ route('2fa.verify-code') }}">

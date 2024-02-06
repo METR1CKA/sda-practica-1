@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,9 +84,9 @@ class TwoFactorController extends Controller
   /**
    * Muestra la vista para establecer el número de teléfono.
    * 
-   * @return \Illuminate\View\View
+   * @return RedirectResponse|View
    */
-  public function create(): View
+  public function create()
   {
     Log::info('SEND VIEW TO SET PHONE', [
       'STATUS' => 'SUCCESS',
@@ -95,7 +96,11 @@ class TwoFactorController extends Controller
       'METHOD' => 'create',
     ]);
 
-    return view('auth.phone');
+    $roles = Role::getRoles();
+
+    return !Auth::user()->phone && Auth::user()->role_id == $roles['ADMIN']
+      ? view('auth.phone')
+      : redirect()->intended(RouteServiceProvider::HOME);
   }
 
   /**
@@ -115,7 +120,7 @@ class TwoFactorController extends Controller
     ]);
 
     // Enviar el código a través de SMS usando Twilio
-    $send = $this->sendSmsCode($request->phone, $code);
+    $send = $this->sendSmsCode($request->user()->phone, $code);
 
     if (!$send) {
       return back()
@@ -169,9 +174,9 @@ class TwoFactorController extends Controller
   /**
    * Muestra la vista para verificar el código.
    * 
-   * @return \Illuminate\View\View
+   * @return RedirectResponse|View
    */
-  public function edit(): View
+  public function edit()
   {
     Log::info('SEND VIEW VERIFY CODE', [
       'STATUS' => 'SUCCESS',
@@ -181,7 +186,11 @@ class TwoFactorController extends Controller
       'METHOD' => 'create',
     ]);
 
-    return view('auth.verify');
+    $roles = Role::getRoles();
+
+    return !Auth::user()->twoFA->code2fa_verified && Auth::user()->role_id == $roles['ADMIN']
+      ? view('auth.verify')
+      : redirect()->intended(RouteServiceProvider::HOME);
   }
 
   /**

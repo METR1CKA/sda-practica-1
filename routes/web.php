@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-Route::middleware(['auth', 'verified', 'password.confirm', 'auth.2fa'])->group(function () {
+Route::middleware(['auth', 'verified', 'auth.2fa', 'password.confirm'])->group(function () {
   // Ruta principal
   Route::get('/', function () {
     Log::info('SEND VIEW DASHBOARD OR WELCOME', [
