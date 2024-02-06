@@ -99,13 +99,43 @@ class TwoFactorController extends Controller
   }
 
   /**
-   * Store a newly created resource in storage.
+   * Reenviar el código de verificación a través de SMS.
    * 
    * @param  \Illuminate\Http\Request  $request
    * 
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function store(Request $request) //: RedirectResponse
+  public function resend(Request $request): RedirectResponse
+  {
+    // Generar un código de verificación
+    $code = $this->generateCode();
+
+    $request->user()->twoFA()->update([
+      'code2fa' => $code,
+    ]);
+
+    // Enviar el código a través de SMS usando Twilio
+    $send = $this->sendSmsCode($request->phone, $code);
+
+    if (!$send) {
+      return back()
+        ->withErrors(['phone' => 'Error sending code']);
+    }
+
+    // Redirigir al usuario
+    return redirect()
+      ->back()
+      ->with('status', 'The verification code has been sent.');
+  }
+
+  /**
+   * Establecer el número de teléfono y enviar el código de verificación a través de SMS.
+   * 
+   * @param  \Illuminate\Http\Request  $request
+   * 
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function store(Request $request): RedirectResponse
   {
     // Validar el número de teléfono
     $request->validate([
@@ -155,7 +185,7 @@ class TwoFactorController extends Controller
   }
 
   /**
-   * Update the specified resource in storage.
+   * Validar el código de verificación.
    * 
    * @param  \Illuminate\Http\Request  $request
    * 

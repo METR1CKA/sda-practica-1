@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
 
   Route::post('2fa/send-code', [TwoFactorController::class, 'store']);
 
+  Route::get('2fa/resend-code', [TwoFactorController::class, 'resend'])
+    ->name('2fa.resend-code');
+
   Route::get('2fa/verify-code', [TwoFactorController::class, 'edit'])
     ->name('2fa.verify-code');
 

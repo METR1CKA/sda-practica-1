@@ -15,6 +15,12 @@
       <x-input-error :messages="$errors->get('code')" class="mt-2" />
     </div>
 
+    @if (session('status'))
+    <div class="alert alert-success text-green-500">
+      {{ session('status') }}
+    </div>
+    @endif
+
     <!-- Recaptcha V2 -->
     <div class="form-group mt-3">
       {!! NoCaptcha::renderJs() !!}
@@ -29,8 +35,12 @@
     </div>
     @endif
 
-    <div class="flex justify-end mt-4">
-      <x-primary-button>
+    <div class="flex items-center justify-end mt-4">
+      <a class="ms-4 underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('2fa.resend-code') }}">
+        {{ __('Resend 2FA Code') }}
+      </a>
+
+      <x-primary-button class="ms-4">
         {{ __('Send Verification Code') }}
       </x-primary-button>
     </div>
