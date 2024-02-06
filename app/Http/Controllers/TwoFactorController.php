@@ -34,7 +34,7 @@ class TwoFactorController extends Controller
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_POST, 1);
       curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['From' => $from, 'To' => $phone, 'Body' => $body]));
-      curl_setopt($ch, CURLOPT_USERPWD, "AC5835eaf772bc767e9dc795cba8c6a29e:a6cde25625fd8b2d47cfe0a569333a7f");
+      curl_setopt($ch, CURLOPT_USERPWD, "AC5835eaf772bc767e9dc795cba8c6a29e:cd286c5350acfff7fae956840ad17df2");
 
       curl_exec($ch);
       curl_close($ch);
@@ -84,24 +84,6 @@ class TwoFactorController extends Controller
   }
 
   /**
-   * Muestra la vista para redireccionar al 2FA.
-   * 
-   * @return \Illuminate\Http\RedirectResponse
-   */
-  public function show(): RedirectResponse
-  {
-    Log::info('SEND 2FA REDIRECT', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to set phone number for send code',
-      'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => TwoFactorController::class,
-      'METHOD' => 'show',
-    ]);
-
-    return redirect()->intended(RouteServiceProvider::HOME);
-  }
-
-  /**
    * Store a newly created resource in storage.
    * 
    * @param  \Illuminate\Http\Request  $request
@@ -134,8 +116,8 @@ class TwoFactorController extends Controller
     }
 
     // Redirigir al usuario
-    // return redirect()->intended(RouteServiceProvider::HOME);
-    return redirect()->route('2fa.verify-code');
+    return redirect()->intended(RouteServiceProvider::HOME);
+    // return redirect()->route('2fa.verify-code');
   }
 
   /**

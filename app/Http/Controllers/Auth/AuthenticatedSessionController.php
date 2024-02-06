@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -54,15 +55,17 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
+    event(new Registered($request->user()));
+
     Log::info('LOGIN', [
       'STATUS' => 'SUCCESS',
       'ACTION' => 'Authenticate',
       'SESSION' => $request->session()->all(),
       'USER' => Auth::user(),
-      'REDIRECT_TO' => RouteServiceProvider::TWOFA,
+      'REDIRECT_TO' => RouteServiceProvider::HOME,
     ]);
 
-    return redirect()->intended(RouteServiceProvider::TWOFA);
+    return redirect()->intended(RouteServiceProvider::HOME);
   }
 
   /**

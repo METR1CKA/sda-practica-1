@@ -62,10 +62,6 @@ Route::middleware('auth')->group(function () {
   Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
   // 2FA authentication
-  Route::get('2fa', [TwoFactorController::class, 'show'])
-    ->middleware(['2fa.sms'])
-    ->name('2fa');
-
   Route::get('2fa/send-code', [TwoFactorController::class, 'create'])
     ->name('2fa.send-code');
 

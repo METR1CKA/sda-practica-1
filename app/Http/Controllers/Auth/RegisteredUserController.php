@@ -8,7 +8,6 @@ use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Exception;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -114,10 +113,6 @@ class RegisteredUserController extends Controller
           'password_confirmation' => 'There was an error creating the user.',
         ]);
     }
-
-    event(new Registered($user));
-
-    Auth::login($user);
 
     return redirect(RouteServiceProvider::HOME);
   }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +23,24 @@ class AuthTwoFactor
       return redirect()->route('login');
     }
 
-    $exists_phone = $request->user()->phone;
+    $roles = Role::getRoles();
 
-    $two_factor = $request->user()->code2fa;
+    $role_id = Auth::user()->role->id;
 
-    if (!$two_factor && !$exists_phone) {
-      return redirect()->route('2fa.send-code');
-    }
+    if ($check && $role_id == $roles['ADMIN']) {
+      $exists_phone = $request->user()->phone;
 
-    $two_factor_verified = $request->user()->code2fa_verified;
+      $two_factor = $request->user()->code2fa;
 
-    if (!$two_factor_verified) {
-      return redirect()->route('2fa.verify-code');
+      if (!$two_factor && !$exists_phone) {
+        return redirect()->route('2fa.send-code');
+      }
+
+      $two_factor_verified = $request->user()->code2fa_verified;
+
+      if (!$two_factor_verified) {
+        return redirect()->route('2fa.verify-code');
+      }
     }
 
     return $next($request);
