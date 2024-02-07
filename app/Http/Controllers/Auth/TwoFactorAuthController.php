@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Twilio\Rest\Client;
 
-class TwoFactorController extends Controller
+class TwoFactorAuthController extends Controller
 {
   /**
    * Generar un código de verificación.
@@ -39,7 +40,7 @@ class TwoFactorController extends Controller
       'STATUS' => 'SUCCESS',
       'ACTION' => 'Send code',
       'PHONE' => $phone,
-      'CONTROLLER' => TwoFactorController::class,
+      'CONTROLLER' => TwoFactorAuthController::class,
       'METHOD' => 'sendSmsCode',
       'CODE' => $code,
     ]);
@@ -92,7 +93,7 @@ class TwoFactorController extends Controller
       'STATUS' => 'SUCCESS',
       'ACTION' => 'Show view to set phone number for send code',
       'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => TwoFactorController::class,
+      'CONTROLLER' => TwoFactorAuthController::class,
       'METHOD' => 'create',
     ]);
 
@@ -182,7 +183,7 @@ class TwoFactorController extends Controller
       'STATUS' => 'SUCCESS',
       'ACTION' => 'Show view to verify code',
       'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => TwoFactorController::class,
+      'CONTROLLER' => TwoFactorAuthController::class,
       'METHOD' => 'create',
     ]);
 

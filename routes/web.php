@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 */
 
 Route::middleware([
-  'auth', 'verified', 'auth.2fa', 'password.confirm'
+  'auth', 'verified', 'auth.2fa'
 ])->group(function () {
   // Ruta principal
   Route::get('/', function () {
@@ -42,11 +42,13 @@ Route::middleware([
     ->name('dashboard');
 
   // Rutas de usuarios
-  Route::get('/users', [UserController::class, 'index'])
-    ->name('users.index');
+  Route::middleware('password.confirm')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])
+      ->name('users.index');
 
-  Route::delete('/users/{user}', [UserController::class, 'destroy'])
-    ->name('users.destroy');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])
+      ->name('users.destroy');
+  });
 
   // Rutas de perfil
   Route::get('/profile', [ProfileController::class, 'edit'])

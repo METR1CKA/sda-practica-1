@@ -56,6 +56,10 @@ class ConfirmablePasswordController extends Controller
       'METHOD' => 'store',
     ]);
 
+    $request->validate([
+      'g-recaptcha-response' => 'required|captcha',
+    ]);
+
     $validate = Auth::guard('web')->validate([
       'email' => $request->user()->email,
       'password' => $request->password,

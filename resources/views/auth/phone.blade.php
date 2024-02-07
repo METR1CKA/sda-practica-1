@@ -8,7 +8,7 @@
 
     <!-- Phone -->
     <div>
-      <x-input-label for="phone" :value="__('Phone with country code')" />
+      <x-input-label for="phone" :value="__('Enter phone with country code (+52, +1, etc)')" />
 
       <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" required autocomplete="phone" />
 
