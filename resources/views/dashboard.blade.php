@@ -16,6 +16,10 @@
           Welcome {{ Auth::user()->username }}!
         </div>
       </div>
-    </div>
-  </div>
+
+      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-4">
+        <div class="p-6 text-gray-900 dark:text-gray-100 flex justify-center">
+          <img src="https://http.cat/images/200.jpg" alt="">
+        </div>
+      </div>
 </x-app-layout>

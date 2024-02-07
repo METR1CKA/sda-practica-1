@@ -14,13 +14,13 @@
 
   <!-- Scripts -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
-  <script src="https://www.google.com/recaptcha/api.js?render=6LcyA2ApAAAAAEx-ghJioxM5aDaQ--_5qxNjwaMD"></script>
+  <script src="{{ env('V3_RECAPTCHA_JS') }}"></script>
   <script>
     document.addEventListener('submit', function(e) {
       e.preventDefault();
 
       grecaptcha.ready(function() {
-        grecaptcha.execute('6LcyA2ApAAAAAEx-ghJioxM5aDaQ--_5qxNjwaMD', {
+        grecaptcha.execute("{{ env('V3_RECAPTCHA_SITEKEY') }}", {
           action: 'submit'
         }).then(function(token) {
           let form = e.target;
