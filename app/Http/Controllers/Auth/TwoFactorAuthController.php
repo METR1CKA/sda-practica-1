@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Hash;
 
 class TwoFactorAuthController extends Controller
 {
@@ -117,7 +118,7 @@ class TwoFactorAuthController extends Controller
     $code = $this->generateCode();
 
     $request->user()->twoFA()->update([
-      'code2fa' => $code,
+      'code2fa' => Hash::make($code),
     ]);
 
     // Enviar el código a través de SMS usando Twilio
@@ -157,7 +158,7 @@ class TwoFactorAuthController extends Controller
     ]);
 
     $request->user()->twoFA()->update([
-      'code2fa' => $code,
+      'code2fa' => Hash::make($code),
     ]);
 
     // Enviar el código a través de SMS usando Twilio
@@ -209,7 +210,7 @@ class TwoFactorAuthController extends Controller
     ]);
 
     // Verificar si el código es correcto
-    $is_valid = $request->code == $request->user()->twoFA->code2fa;
+    $is_valid = Hash::check($request->code, $request->user()->twoFA->code2fa);
 
     if (!$is_valid) {
       // El código es incorrecto, volver a mostrar el formulario de verificación
