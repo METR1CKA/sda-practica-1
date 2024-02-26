@@ -23,45 +23,16 @@ class AppServiceProvider extends ServiceProvider
    */
   public function boot(): void
   {
-    // Validar la conexión con la base de datos
-    try {
-      DB::connection()->getPdo();
-    } catch (\Exception $e) {
-      Log::error('CONNECTION TO DATABASE', [
-        'STATUS' => 'ERROR',
-        'MESSAGE' => $e->getMessage(),
-        'LINE_CODE' => $e->getLine(),
-        'ACTION' => 'Exception to connect to database',
-        'CONTROLLER' => AppServiceProvider::class,
-        'METHOD' => 'boot',
-        'TRACE' => $e->getTraceAsString(),
-        'FILE' => $e->getFile(),
-      ]);
-
-      error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
-
-      exit(1);
-    }
-
-    // Validaciones antes de ejecutar el servidor
-    $running_in_console = app()->runningInConsole();
-
-    $command = $running_in_console ? $_SERVER['argv'][1] ?? null : null;
-
-    if ($running_in_console && $command == 'serve') {
-      // Validar si las migraciones se han ejecutado
+    if (env('APP_ENV') !== 'production') {
+      // Validar la conexión con la base de datos
       try {
-        $migrations_pending = Artisan::call('migrate:status') > 0;
-
-        if ($migrations_pending) {
-          throw new \Exception('Migrations have not been executed. Execute \'php artisan migrate\' to run them.');
-        }
+        DB::connection()->getPdo();
       } catch (\Exception $e) {
-        Log::error('MIGRATIONS HAVE NOT BEEN EXECUTED', [
+        Log::error('CONNECTION TO DATABASE', [
           'STATUS' => 'ERROR',
           'MESSAGE' => $e->getMessage(),
           'LINE_CODE' => $e->getLine(),
-          'ACTION' => 'Exception to run server',
+          'ACTION' => 'Exception to connect to database',
           'CONTROLLER' => AppServiceProvider::class,
           'METHOD' => 'boot',
           'TRACE' => $e->getTraceAsString(),
@@ -73,30 +44,61 @@ class AppServiceProvider extends ServiceProvider
         exit(1);
       }
 
-      // Validar si los seeders se han ejecutado
-      try {
-        $exist_table_roles = Schema::hasTable('roles');
+      // Validaciones antes de ejecutar el servidor
+      $running_in_console = app()->runningInConsole();
 
-        $exist_data_in_table_roles = DB::table('roles')->exists();
+      $command = $running_in_console ? $_SERVER['argv'][1] ?? null : null;
 
-        if ($exist_table_roles && !$exist_data_in_table_roles) {
-          throw new \Exception('Seeders have not been executed. Execute \'php artisan db:seed\' to run them.');
+      if ($running_in_console && $command == 'serve') {
+        // Validar si las migraciones se han ejecutado
+        try {
+          $migrations_pending = Artisan::call('migrate:status') > 0;
+
+          if ($migrations_pending) {
+            throw new \Exception('Migrations have not been executed. Execute \'php artisan migrate\' to run them.');
+          }
+        } catch (\Exception $e) {
+          Log::error('MIGRATIONS HAVE NOT BEEN EXECUTED', [
+            'STATUS' => 'ERROR',
+            'MESSAGE' => $e->getMessage(),
+            'LINE_CODE' => $e->getLine(),
+            'ACTION' => 'Exception to run server',
+            'CONTROLLER' => AppServiceProvider::class,
+            'METHOD' => 'boot',
+            'TRACE' => $e->getTraceAsString(),
+            'FILE' => $e->getFile(),
+          ]);
+
+          error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
+
+          exit(1);
         }
-      } catch (\Exception $e) {
-        Log::error('SEEDERS HAVE NOT BEEN EXECUTED', [
-          'STATUS' => 'ERROR',
-          'MESSAGE' => $e->getMessage(),
-          'LINE_CODE' => $e->getLine(),
-          'ACTION' => 'Exception to run server',
-          'CONTROLLER' => AppServiceProvider::class,
-          'METHOD' => 'boot',
-          'TRACE' => $e->getTraceAsString(),
-          'FILE' => $e->getFile(),
-        ]);
 
-        error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
+        // Validar si los seeders se han ejecutado
+        try {
+          $exist_table_roles = Schema::hasTable('roles');
 
-        exit(1);
+          $exist_data_in_table_roles = DB::table('roles')->exists();
+
+          if ($exist_table_roles && !$exist_data_in_table_roles) {
+            throw new \Exception('Seeders have not been executed. Execute \'php artisan db:seed\' to run them.');
+          }
+        } catch (\Exception $e) {
+          Log::error('SEEDERS HAVE NOT BEEN EXECUTED', [
+            'STATUS' => 'ERROR',
+            'MESSAGE' => $e->getMessage(),
+            'LINE_CODE' => $e->getLine(),
+            'ACTION' => 'Exception to run server',
+            'CONTROLLER' => AppServiceProvider::class,
+            'METHOD' => 'boot',
+            'TRACE' => $e->getTraceAsString(),
+            'FILE' => $e->getFile(),
+          ]);
+
+          error_log("\n[-] ERROR: " . $e->getMessage() . "\n");
+
+          exit(1);
+        }
       }
     }
   }
