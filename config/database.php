@@ -76,6 +76,11 @@ return [
       'prefix_indexes' => true,
       'search_path' => 'public',
       'sslmode' => env('DB_SSLMODE', 'prefer'),
+      'options' => env('APP_ENV') == 'production' ? [
+        PDO::PGSQL_ATTR_SSL_ROOT_CERT => env('DB_SSLROOTCERT'),
+        PDO::PGSQL_ATTR_SSL_CERT => env('DB_SSLCERT'),
+        PDO::PGSQL_ATTR_SSL_KEY => env('DB_SSLKEY'),
+      ] : [],
     ],
 
     'sqlsrv' => [
