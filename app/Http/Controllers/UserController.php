@@ -12,23 +12,9 @@ class UserController extends Controller
 {
   public function index(): View
   {
-    Log::info('SEND VIEW USERS TABLE', [
-      'ACTION' => 'Show view to list users',
-      'CONTROLLER' => UserController::class,
-      'USER' => Auth::user(),
-      'METHOD' => 'index',
-    ]);
-
     $this->authorize('isValidRole', Auth::user());
 
     $users = User::all()->where('id', '!=', Auth::user()->id);
-
-    Log::info('USERS LISTED', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to list users',
-      'USER' => Auth::user(),
-      'USERS' => $users,
-    ]);
 
     return view('users.table', [
       'users' => $users,

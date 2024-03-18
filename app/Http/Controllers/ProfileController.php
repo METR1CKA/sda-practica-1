@@ -23,14 +23,6 @@ class ProfileController extends Controller
    */
   public function edit(Request $request): View
   {
-    Log::info('SEND VIEW PROFILE EDIT', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to edit profile',
-      'CONTROLLER' => ProfileController::class,
-      'USER' => $request->user() ?? 'GUEST',
-      'METHOD' => 'edit',
-    ]);
-
     return view('profile.edit', [
       'user' => $request->user(),
     ]);

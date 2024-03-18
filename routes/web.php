@@ -3,8 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +20,6 @@ Route::middleware([
 ])->group(function () {
   // Ruta principal
   Route::get('/', function () {
-    Log::info('SEND VIEW DASHBOARD OR WELCOME', [
-      'USER' => Auth::user(),
-    ]);
-
     return view('welcome');
   })
     ->middleware(['admin.view.welcome'])
@@ -33,10 +27,6 @@ Route::middleware([
 
   // Ruta de dashboard
   Route::get('/dashboard', function () {
-    Log::info('SEND VIEW DASHBOARD', [
-      'USER' => Auth::user(),
-    ]);
-
     return view('dashboard');
   })
     ->name('dashboard');

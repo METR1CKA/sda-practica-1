@@ -26,19 +26,6 @@ class NewPasswordController extends Controller
    */
   public function create(Request $request): View
   {
-    Log::info('SEND VIEW RESET PASSWORD', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to reset password',
-      'HTTP-VERB' => $request->method(),
-      'URL' => $request->url(),
-      'IP' => $request->ip(),
-      'USER_AGENT' => $request->userAgent(),
-      'SESSION' => $request->session()->all(),
-      'USER' => $request->user(),
-      'CONTROLLER' => NewPasswordController::class,
-      'METHOD' => 'create',
-    ]);
-
     return view('auth.reset-password', ['request' => $request]);
   }
 

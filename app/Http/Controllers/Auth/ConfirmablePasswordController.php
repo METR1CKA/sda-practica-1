@@ -23,14 +23,6 @@ class ConfirmablePasswordController extends Controller
    */
   public function show(): View
   {
-    Log::info('SEND VIEW CONFIRM PASSWORD', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to confirm password',
-      'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => ConfirmablePasswordController::class,
-      'METHOD' => 'show',
-    ]);
-
     return view('auth.confirm-password');
   }
 

@@ -90,14 +90,6 @@ class TwoFactorAuthController extends Controller
    */
   public function create()
   {
-    Log::info('SEND VIEW TO SET PHONE', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to set phone number for send code',
-      'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => TwoFactorAuthController::class,
-      'METHOD' => 'create',
-    ]);
-
     $roles = Role::getRoles();
 
     return !Auth::user()->phone && Auth::user()->role_id == $roles['ADMIN']
@@ -180,14 +172,6 @@ class TwoFactorAuthController extends Controller
    */
   public function edit()
   {
-    Log::info('SEND VIEW VERIFY CODE', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to verify code',
-      'USER' => Auth::user() ?? 'GUEST',
-      'CONTROLLER' => TwoFactorAuthController::class,
-      'METHOD' => 'create',
-    ]);
-
     $roles = Role::getRoles();
 
     return !Auth::user()->twoFA->code2fa_verified && Auth::user()->role_id == $roles['ADMIN']

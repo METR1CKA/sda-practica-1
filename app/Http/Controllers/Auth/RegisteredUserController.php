@@ -27,14 +27,6 @@ class RegisteredUserController extends Controller
    */
   public function create(): View
   {
-    Log::info('SEND VIEW REGISTER', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to register',
-      'CONTROLLER' => RegisteredUserController::class,
-      'USER' => Auth::user() ?? 'GUEST',
-      'METHOD' => 'create',
-    ]);
-
     return view('auth.register');
   }
 
@@ -46,7 +38,7 @@ class RegisteredUserController extends Controller
    * 
    * @throws \Illuminate\Validation\ValidationException
    */
-  public function store(RegisterPostRequest $request): RedirectResponse
+  public function store(RegisterPostRequest $request) //: RedirectResponse
   {
     Log::info('REQUEST TO REGISTER', [
       'ACTION' => 'Register',

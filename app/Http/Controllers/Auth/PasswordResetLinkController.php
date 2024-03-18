@@ -24,14 +24,6 @@ class PasswordResetLinkController extends Controller
    */
   public function create(): View
   {
-    Log::info('SEND VIEW FORGOT PASSWORD', [
-      'STATUS' => 'SUCCESS',
-      'ACTION' => 'Show view to forgot password',
-      'CONTROLLER' => PasswordResetLinkController::class,
-      'USER' => Auth::user() ?? 'GUEST',
-      'METHOD' => 'create',
-    ]);
-
     return view('auth.forgot-password');
   }
 
