@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -81,6 +82,10 @@ class AuthenticatedSessionController extends Controller
     ]);
 
     $request->session()->forget('auth.password_confirmed_at');
+
+    // DB::table('sessions')
+    //   ->where('user_id', Auth::id())
+    //   ->delete();
 
     Auth::guard('web')->logout();
 
