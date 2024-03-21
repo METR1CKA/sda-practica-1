@@ -2,6 +2,8 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <x-input-label class="text-center"> {{ env('SERVER') }} </x-input-label>
+
     <form method="POST" action="{{ route('login') }}">
       @csrf
 
